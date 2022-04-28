@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username');
-            $table->integer('karma_score')->unsigned()->default(0);
+            $table->integer('karma_score')->unsigned()->index()->default(0);
             $table->foreignIdFor(Image::class,'image_id')->nullable()->references('id')->on('images')->onDelete('cascade');
         });
     }
