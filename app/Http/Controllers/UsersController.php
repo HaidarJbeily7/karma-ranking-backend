@@ -8,6 +8,100 @@ use App\Models\User;
 class UsersController extends Controller
 {
 
+    public function getUsersForLeaderboard2(Request $request, $id){
+        $limit = $request->limit ?? 5;
+
+        $users = cache('users');
+
+        $message = 'cache';
+
+        if(is_null($users)){
+            $message = 'db';
+            $users = User::with('image')->orderByDesc('karma_score')->get()->toArray();
+            cache(['users' => $users], 30);
+        }
+        $map = $this->getMappingArray($users);
+
+        $user_position = $map[(string) $id];
+
+        ////////////////
+        $lt_arr = [];
+        $index = $user_position - 1;
+        while($index >= 0 && $user_position - $index <= $limit - 1){
+            array_push($lt_arr, $users[(string)$index]);
+            $index--;
+        }
+        $data = [];
+
+        $gt_arr = [];
+        $index = $user_position + 1;
+        $max = count($users);
+        while($index < $max &&  $index - $user_position  <= $limit - 1){
+            array_push($gt_arr, $users[(string)$index]);
+            $index++;
+        }
+
+        //////////////
+        $r =  (int) (($limit-1) / 2) + ($limit-1) % 2;
+        $reminder = $r - count($gt_arr);
+        $reminder = ($reminder<0)?0:$reminder;
+        $i = 1;
+        foreach($lt_arr as $value){
+            if($i > $r + $reminder){
+                break;
+            }
+            $value['position'] = $user_position + $i + 1;
+            array_push($data, $value);
+            $i++;
+        }
+        $data = array_reverse($data);
+
+        //////////////
+
+        $user = $users[(string) $user_position];
+        $user['position'] = $user_position + 1;
+        array_push($data, $user);
+        ///////////////
+        $reminder = $r - count($lt_arr);
+        $reminder = ($reminder<0)?0:$reminder;
+
+        $i = 1;
+        foreach($gt_arr as $value){
+            if($i > $r + $reminder){
+                break;
+            }
+            $value['position'] = $user_position - $i;
+            $i++;
+            array_push($data, $value);
+        }
+
+        $data = array_reverse($data);
+
+
+        ///////////
+
+
+
+
+        return response()->json([
+            'message' => $message,
+            'data' => $data
+        ]);
+    }
+
+    public function getMappingArray($users){
+        $ranks_map = cache('mapping');
+        if(is_null($ranks_map)){
+            $ranks_map = [];
+            foreach ($users as $key => $value) {
+                $ranks_map [(string)$value['id']] = $key;
+            }
+            cache(['mapping' => $ranks_map], 29);
+        }
+        return $ranks_map;
+    }
+
+    /////////////////////////////////////////
     public function getUsersForLeaderboard($id){
 
         $query = User::query();
