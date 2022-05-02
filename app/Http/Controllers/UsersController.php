@@ -9,7 +9,7 @@ class UsersController extends Controller
 {
 
     public function getUsersForLeaderboard2(Request $request, $id){
-        ini_set('memory_limit', '100M');
+        ini_set('memory_limit', '-1');
         $limit = $request->limit ?? 5;
 
         $users = cache('users');
