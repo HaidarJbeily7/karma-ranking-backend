@@ -10,24 +10,50 @@ use Illuminate\Support\Facades\Redis;
 class UsersController extends Controller
 {
 
-    public function getUsersForLeaderboard3( $id){
+    public function getUsersForLeaderboard3(Request $request, $id){
+
+        $limit = $request->limit ?? 5;
 
         $lb = new LeaderBoard();
 
-        $data = $lb->arroundUser($id);
+        $data = $lb->arroundUser($id, $limit-1)->toArray();
 
-        $query = User::query();
+        $data = array_unique($data);
+        $size = count($data);
+        $new_data = [];
 
-        $res = [];
-        foreach ($data as $value) {
-            $user_object = json_decode(Redis::get((string)$value));
-            array_push($res, $user_object);
+        foreach($data as $item){
+            array_push($new_data, $item);
+        }
+        $data = $new_data;
+        
+        $key = array_search($id, $data);
+        $start = $key;
+        $end = $key;
+
+        while($end - $start + 1 < $limit){
+            if($end + 1 == $size && $start - 1 < 0)
+                break;
+
+            if($end+1 != $size)
+                $end++;
+
+            if($start - 1 >= 0)
+                $start--;
+
+        }
+
+
+        $response = [];
+        for ($i=$start; $i <= $end ; $i++) {
+            $user_object = json_decode(Redis::get((string)$data[$i]));
+            array_push($response, $user_object);
         }
 
 
 
         return response()->json([
-            'data' => $res
+            'data' => $response
         ]);
     }
 
@@ -129,7 +155,7 @@ class UsersController extends Controller
     public function getUsersForLeaderboard($id){
 
         $query = User::query();
-        // dd($query->min('karma'))
+        // dd($query->max('karma'))
         // dd($query->where('karma_score', 999991809)->get());
         $user = $query->with('image')->find($id);
 

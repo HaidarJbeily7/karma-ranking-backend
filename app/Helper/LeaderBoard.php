@@ -32,12 +32,15 @@ class LeaderBoard{
         return $this->redis->zScore($this->set, $userId);
     }
 
-    public function arroundUser(int $userId, bool $withScores = true)
+    public function arroundUser(int $userId, int $limit = 4 ,bool $withScores = true)
     {
         $rank = (int)$this->getRank($userId);
-        $neighbors = $this->redis->zRevRange($this->set, $rank - 2, $rank + 2, array('withscores' => $withScores));
+        $after_neighbors = $this->redis->zRevRange($this->set, $rank , $rank + $limit, array('withscores' => $withScores));
+        $before_neighbors = $this->redis->zRevRange($this->set, ($rank - $limit < 0) ? 0 : $rank - $limit , ($rank - 1 < 0) ? 0 : $rank - 1, array('withscores' => $withScores));
 
-        return collect($neighbors)->keys();
+        $neighbors = array_merge(collect($before_neighbors)->keys()->toArray(), collect($after_neighbors)->keys()->toArray());
+
+        return collect($neighbors)->values();
     }
 }
 
