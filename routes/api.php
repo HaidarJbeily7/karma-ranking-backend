@@ -16,5 +16,6 @@ use App\Http\Controllers\UsersController;
 */
 
 
+Route::get('v3/user/{id}/karma-position', [UsersController::class, 'getUsersForLeaderboard3']);
 Route::get('v2/user/{id}/karma-position', [UsersController::class, 'getUsersForLeaderboard2']);
 Route::get('v1/user/{id}/karma-position', [UsersController::class, 'getUsersForLeaderboard']);

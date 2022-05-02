@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 
 class FillRedis extends Command
 {
@@ -44,6 +45,7 @@ class FillRedis extends Command
 
         foreach ($users as $user) {
             $user->storeUserScoreToLeaderBoard();
+            Redis::set((string)$user->id, json_encode($user->toArray()));
             $bar->advance();
         }
         $bar->finish();

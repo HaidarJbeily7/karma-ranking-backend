@@ -2,11 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\LeaderBoard;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Redis;
 
 class UsersController extends Controller
 {
+
+    public function getUsersForLeaderboard3( $id){
+
+        $lb = new LeaderBoard();
+
+        $data = $lb->arroundUser($id);
+
+        $query = User::query();
+
+        $res = [];
+        foreach ($data as $value) {
+            $user_object = json_decode(Redis::get((string)$value));
+            array_push($res, $user_object);
+        }
+
+
+
+        return response()->json([
+            'data' => $res
+        ]);
+    }
 
     public function getUsersForLeaderboard2(Request $request, $id){
         ini_set('memory_limit', '-1');

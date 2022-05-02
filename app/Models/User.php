@@ -23,6 +23,6 @@ class User extends Model
 
     public function storeUserScoreToLeaderBoard(){
        $lb =  new LeaderBoard();
-       $lb->storeScore($this->score, $this->id);
+       $lb->storeScore($this->karma_score, $this->id);
     }
 }
