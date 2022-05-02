@@ -13,15 +13,15 @@ class LeaderBoard{
         $this->redis = Redis::connection();
     }
 
-    public function storeScore($score, $user): void
+    public function storeScore($score, $userID): void
     {
-        $this->redis->zAdd($this->set, $score, (string)$user->id);
+        $this->redis->zAdd($this->set, $score, (string)$userID);
     }
 
     public function getRank(int $userId): int
     {
         if (!$this->redis->exists($this->set)) {
-            $msg = "LeaderBoard seems empty.Execute php artisan leaderboard:seedcoursescores to seed the data";
+            $msg = "LeaderBoard seems empty.Execute php artisan leaderboard:scores to seed the data";
             throw new \Exception($msg);
         }
         return $this->redis->zRevRank($this->set, $userId);
