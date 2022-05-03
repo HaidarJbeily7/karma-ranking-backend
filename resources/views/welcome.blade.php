@@ -65,8 +65,9 @@
                     let start = '<tr>';
                     if(data[i]['id'] == id)
                         start = '<tr style="background-color:blue;">';
+                    let image = '<img src='+ data[i]['image_url']  +' class="rounded-circle" style="width: 40px;"alt="Avatar" />';
                     str+= start + '<td>' + data[i]['position'] + '</td>';
-                    str+= '<td>' + data[i]['username'] + '</td>';
+                    str+= '<td>' +image + '<span style="width:30px";></span>'+ data[i]['username'] + '</td>';
                     str+= '<td>' + data[i]['karma_score'] + '</td></tr>';
                  }
                  body.innerHTML = str;
