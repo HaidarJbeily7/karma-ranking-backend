@@ -23,7 +23,7 @@ class UserFactory extends Factory
 
         return [
             'username' => $this->faker->name(),
-            'karma_score' => $this->faker->randomNumber(),
+            'karma_score' => mt_rand(0, 10000000),
             'image_id' => $images[$key]['id']
         ];
     }
