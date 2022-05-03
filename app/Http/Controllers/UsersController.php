@@ -166,7 +166,7 @@ class UsersController extends Controller
         $user_position = User::orderBy('karma_score')->where('karma_score', '>', $user->karma_score)->count() + 1;
 
 
-        $users_lt = User::where('karma_score', '<', $user->karma_score)->orderByDesc('karma_score')->distinct('karma_score')->take(4)->with('image')->get();
+        $users_lt = User::where('karma_score', '<', $user->karma_score)->orderByDesc('karma_score')->take(4)->with('image')->get();
         $users_gt = User::where('karma_score', '>', $user->karma_score)->orderBy('karma_score')->take(4)->with('image')->get();
         $data = [];
 
@@ -180,14 +180,21 @@ class UsersController extends Controller
                 break;
             }
             $value->position = $user_position + $i;
-            array_push($data, $value->toArray());
+            $value->image_url = $value->image->url;
+            $d = $value->toArray();
+            unset($d['image']);
+            unset($d['image_id']);
+            array_push($data, $d);
             $i++;
         }
         $data = array_reverse($data);
 
         $user->position = $user_position;
-
-        array_push($data, $user->toArray());
+        $user->image_url = $user->image->url;
+        $d = $user->toArray();
+        unset($d['image']);
+        unset($d['image_id']);
+        array_push($data, $d);
 
         $reminder = $r - $users_lt->count();
         $reminder = ($reminder<0)?0:$reminder;
@@ -199,7 +206,11 @@ class UsersController extends Controller
             }
             $value->position = $user_position - $i;
             $i++;
-            array_push($data, $value->toArray());
+            $value->image_url = $value->image->url;
+            $d = $value->toArray();
+            unset($d['image']);
+            unset($d['image_id']);
+            array_push($data, $d);
         }
 
         $data = array_reverse($data);
