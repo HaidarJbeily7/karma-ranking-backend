@@ -40,7 +40,7 @@ class LeaderBoard{
 
         $neighbors = array_merge(collect($before_neighbors)->keys()->toArray(), collect($after_neighbors)->keys()->toArray());
 
-        return collect($neighbors)->values();
+        return [collect($neighbors)->values(), $rank + 1];
     }
 }
 

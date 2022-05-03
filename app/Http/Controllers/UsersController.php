@@ -16,8 +16,9 @@ class UsersController extends Controller
 
         $lb = new LeaderBoard();
 
-        $data = $lb->arroundUser($id, $limit-1)->toArray();
-
+        $row = $lb->arroundUser($id, $limit-1);
+        $data = $row[0]->toArray();
+        $rank = $row[1];
         $data = array_unique($data);
         $size = count($data);
         $new_data = [];
@@ -26,7 +27,7 @@ class UsersController extends Controller
             array_push($new_data, $item);
         }
         $data = $new_data;
-        
+
         $key = array_search($id, $data);
         $start = $key;
         $end = $key;
@@ -43,14 +44,12 @@ class UsersController extends Controller
 
         }
 
-
         $response = [];
         for ($i=$start; $i <= $end ; $i++) {
-            $user_object = json_decode(Redis::get((string)$data[$i]));
+            $user_object = collect(json_decode(Redis::get((string)$data[$i])))->toArray();
+            $user_object['position'] = $rank - $key + $i;
             array_push($response, $user_object);
         }
-
-
 
         return response()->json([
             'data' => $response

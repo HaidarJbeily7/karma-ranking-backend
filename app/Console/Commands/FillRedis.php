@@ -45,7 +45,11 @@ class FillRedis extends Command
 
         foreach ($users as $user) {
             $user->storeUserScoreToLeaderBoard();
-            Redis::set((string)$user->id, json_encode($user->toArray()));
+            $user->image_url = $user->image->url;
+            $data = $user->toArray();
+            unset($data['image_id']);
+            unset($data['image']);
+            Redis::set((string)$user->id, json_encode($data));
             $bar->advance();
         }
         $bar->finish();
