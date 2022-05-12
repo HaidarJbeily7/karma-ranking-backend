@@ -36,12 +36,10 @@ Start the server
 
 ## API Reference
 
-### Get get the overall user position compared to all users depending on the karmascore, in addition to the 2 users right before him and the 2 users right after him. 
-### There are three versions of the API:
-##
-##
-#### V1: I developed this API with the help of indexing in database so when querying the users the query will be optimized to O(n * log(n)) + database connection time 
+##### Get get the overall user position compared to all users depending on the karmascore, in addition to the 2 users right before him and the 2 users right after him. 
+##### There are three versions of the API:
 ####
+V1: I developed this API with the help of indexing in database so when querying the users the query will be optimized to O(n * log(n)) + database connection time 
 ####
 ```http
   GET /api/v1/user/${id}/karma-position
@@ -53,7 +51,7 @@ Start the server
 | `limit` | `integer` |  represents the number of users objects needs to be returned. Default value => 5  |
 
 ####
-#### V2: I enhanced the V1 API with the help of caching all users in the file with the help of file caching in laravel. I cached all the users objects and every 30 seconds I re-cache all users so when querying the users the query will be optimized by erasing the call database time  
+V2: I enhanced the V1 API with the help of caching all users in the file with the help of file caching in laravel. I cached all the users objects and every 30 seconds I re-cache all users so when querying the users the query will be optimized by erasing the call database time  
 ####
 
 ```http
@@ -66,7 +64,7 @@ Start the server
 
 
 ####
-#### V3: I developed this version with the help of REDIS. I added a command *php artisan redis:fill* to add all users to redis cache memory. The benefits of this version are the following: much faster when querying the leaderboard (*ordered set data structure in redis*) and the write operations can be more flexible and faster.
+V3: I developed this version with the help of REDIS. I added a command *php artisan redis:fill* to add all users to redis cache memory. The benefits of this version are the following: much faster when querying the leaderboard (*ordered set data structure in redis*) and the write operations can be more flexible and faster.
 ####
 
 ```http
