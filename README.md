@@ -6,7 +6,7 @@ API to be used by front end and mobile developers. Each user in our database has
 score, the higher the karma score they have, the better ranking position they get.
 
 ## Requirements
-    - php : version >=7.0.1
+    - php : ^7.3|^8.0
     - MySQL
     - Redis
 
