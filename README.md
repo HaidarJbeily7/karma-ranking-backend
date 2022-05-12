@@ -1,64 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Leaderboard API
 
-## About Laravel
+Karma user ranking
+API to be used by front end and mobile developers. Each user in our database has a karma
+score, the higher the karma score they have, the better ranking position they get.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Run Locally
 
-## Learning Laravel
+Clone the project
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+  git clone https://gitlab.com/haidarjbeily1/karma-ranking-api.git
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Go to the project directory
 
-## Laravel Sponsors
+```bash
+  cd karma-ranking-api
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Install dependencies
 
-### Premium Partners
+```bash
+  composer install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Start the server
 
-## Contributing
+```bash
+  php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+## API Reference
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Get get the overall user position compared to all users depending on the karmascore, in addition to the 2 users right before him and the 2 users right after him. 
+### There are three versions of the API:
+##
+##
+#### V1: I developed this API with the help of indexing in database so when querying the users the query will be optimized to O(n * log(n)) + database connection time 
+####
+####
+```http
+  GET /api/v1/user/${id}/karma-position
+```
 
-## Security Vulnerabilities
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `integer` | **Required**. represents the user id  |
+| `limit` | `integer` |  represents the number of users objects needs to be returned. Default value => 5  |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+####
+#### V2: I enhanced the V1 API with the help of caching all users in the file with the help of file caching in laravel. I cached all the users objects and every 30 seconds I re-cache all users so when querying the users the query will be optimized by erasing the call database time  
+####
 
-## License
+```http
+  GET /api/v2/user/${id}/karma-position
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `integer` | **Required**. represents the user id  |
+
+
+####
+#### V3: I developed this version with the help of REDIS. I added a command *php artisan redis:fill* to add all users to redis cache memory. The benefits of this version are the following: much faster when querying the leaderboard (*ordered set data structure in redis*) and the write operations can be more flexible and faster.
+####
+
+```http
+  GET /api/v3/user/${id}/karma-position
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `integer` | **Required**. represents the user id  |
+| `limit` | `integer` |  represents the number of users objects needs to be returned. Default value => 5  |
+
+
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  php artisan test
+```
+
+
+## Authors
+
+- [@haidarjbeily](https://gitlab.com/HaidarJbeily)
+
+
+## Appendix
+
+TODO
+
