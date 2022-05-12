@@ -10,6 +10,20 @@ score, the higher the karma score they have, the better ranking position they ge
     - MySQL
     - Redis
 
+## DB Schema
+users (
+`id`: Primary key
+`username`: Unique
+`karma_score`: positive integer, default is 0.
+`image_id`: foreign key.
+)
+
+images (
+`id`: primary key
+`url`: string
+)
+
+
 ## Run Locally
 
 Clone the project
@@ -36,6 +50,11 @@ Copy .env.example to .env and write the environment variables
   cp .env.example .env
 ```
 
+Generate application key
+
+```bash
+  php artisan key:generate
+```
 Run the migrations
 
 ```bash
