@@ -5,7 +5,10 @@ Karma user ranking
 API to be used by front end and mobile developers. Each user in our database has a karma
 score, the higher the karma score they have, the better ranking position they get.
 
-
+## Requirements
+    - php : version >=7.0.1
+    - MySQL
+    - Redis
 
 ## Run Locally
 
@@ -27,6 +30,30 @@ Install dependencies
   composer install
 ```
 
+Copy .env.example to .env and write the environment variables
+
+```bash
+  cp .env.example .env
+```
+
+Run the migrations
+
+```bash
+  php artisan migrate
+```
+
+Seed the database
+
+```bash
+  php artisan db:seed
+```
+
+Cache the database in the Redis 
+
+```bash
+  php artisan redis:fill
+```
+
 Start the server
 
 ```bash
@@ -37,7 +64,7 @@ Start the server
 ## API Reference
 
 ##### Get get the overall user position compared to all users depending on the karmascore, in addition to the 2 users right before him and the 2 users right after him. 
-##### There are three versions of the API:
+There are three versions of the API:
 ####
 V1: I developed this API with the help of indexing in database so when querying the users the query will be optimized to O(n * log(n)) + database connection time 
 ####
