@@ -139,7 +139,4 @@ To run tests, run the following command
 - [@haidarjbeily](https://gitlab.com/HaidarJbeily)
 
 
-## Appendix
-
-TODO
 
